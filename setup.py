@@ -2,14 +2,14 @@ from setuptools import setup
 
 setup(
     name='hera',
-    version='0.1.1',
+    version='0.1.2',
     description='An interface to interact with a Zeus Traffic Manager.',
     long_description=open('README.rst').read(),
     author='Wil Clouser',
     author_email='wclouser@mozilla.com',
     url='http://github.com/clouserw/hera',
     license='BSD',
-    packages=['hera'],
+    packages=['hera', 'hera/contrib', 'hera/tests'],
     include_package_data=True,
     zip_safe=False,
     classifiers=[
