@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='hera',
-    version='0.1',
+    version='0.1.1',
     description='An interface to interact with a Zeus Traffic Manager.',
     long_description=open('README.rst').read(),
     author='Wil Clouser',
