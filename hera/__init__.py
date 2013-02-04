@@ -110,6 +110,50 @@ class Hera:
         self.loadWSDL(wsdl)
         return self.client.service.getEnabled()
 
+    def getPoolNames(self):
+        """Returns list of pools"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.getPoolNames()
+
+    def getNodes(self,pool=None):
+        """Returns list of nodes in pool"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.getNodes([pool])
+
+    def getNodesConnectionCounts(self, nodes=[]):
+        """Return number of active connections for nodes"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.getNodesConnectionCounts(nodes)
+
+    def getDisabledNodes(self, pool=None):
+        """Returns list of disabled nodes from pool"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.getDisabledNodes([pool])
+
+    def setDisableNodes(self, pool=None, nodes=[]):
+        """Set nodes to draining in pool"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        if sum(self.getNodesConnectionCounts(nodes).values()) != 0:
+            raise HeraException, 'Refusing to disable node(s) with active connections'
+        return self.client.service.setDrainingNodes([pool], [nodes])
+
+    def getDrainingNodes(self,pool=None):
+        """Returns list of draining nodes from pool"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.getDrainingNodes([pool])
+
+    def setDrainingNodes(self, pool=None, node=[]):
+        """Set nodes to draining in pool"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.setDrainingNodes([pool], [node])
+
     def getGlobalCacheInfo(self):
         """Returns a small object of statistics."""
         wsdl = 'System.Cache'
