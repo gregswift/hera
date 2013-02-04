@@ -94,11 +94,6 @@ class Hera:
         self._wsdl_path = wsdl_path
         self._wsdl = new_wsdl
 
-    def __getattr__(self, name):
-        def method(*args):
-            return getattr(self.client.service, name)(*args)
-        return method
-
     def getVirtualServerNames(self):
         """Returns list of Virtual Servers"""
         wsdl = 'VirtualServer'
@@ -111,11 +106,11 @@ class Hera:
         self.loadWSDL(wsdl)
         return self.client.service.getEnabled()
 
-#    def getGlobalCacheInfo(self):
-#        """Returns a small object of statistics."""
-#        wsdl = 'System.Cache'
-#        self.loadWSDL(wsdl)
-#        return self.client.service.getGlobalCacheInfo()
+    def getGlobalCacheInfo(self):
+        """Returns a small object of statistics."""
+        wsdl = 'System.Cache'
+        self.loadWSDL(wsdl)
+        return self.client.service.getGlobalCacheInfo()
 
     def flushAll(self):
         """Flushes everything in the system: all objects across all virtual
