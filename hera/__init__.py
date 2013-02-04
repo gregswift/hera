@@ -15,6 +15,10 @@ def cleanWSDLName(wsdl):
     """Strips leading path and .wsdl ext from path name for consistency"""
     return os.path.basename(wsdl.replace('.wsdl',''))
 
+class HeraException(Exception):
+    def __init__(self, message):
+        Exception.__init__(self, message)
+
 class Hera:
 
     def __init__(self, username, password, location, version=VERSION,
