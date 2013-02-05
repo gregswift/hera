@@ -137,6 +137,13 @@ class Hera:
         return self.client.service.getGlobalCacheInfo()
 
     def flushAll(self):
+        """Deprecated, please use clearWebCache() directly
+
+        Flushes everything in the system: all objects across all virtual
+        servers."""
+        return self.clearWebCache()
+
+    def clearWebCache(self):
         """Flushes everything in the system: all objects across all virtual
         servers."""
         wsdl = 'System.Cache'
