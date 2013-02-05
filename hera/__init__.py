@@ -22,8 +22,7 @@ class Hera:
             wsdl="System.Cache", wsdl_path=WSDL_PATH):
         
         self._wsdl_path = wsdl_path
-        self._wsdl_orig = wsdl
-        self._wsdl = self._getWSDL(wsdl, wsdl_path)
+        self.wsdl = self._getWSDL(wsdl, wsdl_path)
 
         # Apparently Zeus's wsdl is broken and we have to jimmy this thing in
         # manually.  See https://fedorahosted.org/suds/ticket/220 for details.
@@ -31,7 +30,7 @@ class Hera:
 
         doctor = ImportDoctor(imp)
         transport = HttpAuthenticated(username=username, password=password)
-        self._loadWSDL(self._wsdl, doctor, transport, location)
+        self._loadWSDL(self.wsdl, doctor, transport, location)
 
     def _getWSDL(self, wsdl, path=None):
         wsdl = cleanWSDLName(wsdl)
@@ -67,13 +66,14 @@ class Hera:
         self._transport = transport
 
     def loadWSDL(self, wsdl, wsdl_path=None):
-        if wsdl == self._wsdl:
+        if wsdl == self.wsdl:
             return
         new_wsdl = self._getWSDL(wsdl, wsdl_path)
         self._loadWSDL(new_wsdl)
         if wsdl_path is not None:
             self._wsdl_path = wsdl_path
-        self._wsdl = new_wsdl
+        self._previous_wsdl = self.wsdl
+        self.wsdl = new_wsdl
 
     def getVirtualServerNames(self):
         """Returns list of Virtual Servers"""
