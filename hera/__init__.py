@@ -83,7 +83,9 @@ class Hera:
         return self.client.service.getVirtualServerNames()
 
     def getEnabledVirtualServers(self):
-        """Returns list of enabled Virtual servers"""
+        """Convenience function due to namespace conflict on upstream api method
+
+        Returns list of enabled Virtual servers"""
         wsdl = 'VirtualServer'
         self.loadWSDL(wsdl)
         return self.client.service.getEnabled()
