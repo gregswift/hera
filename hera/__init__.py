@@ -21,7 +21,6 @@ class Hera:
     def __init__(self, username, password, location,
             wsdl="System.Cache", wsdl_path=WSDL_PATH):
         
-        self.location = location
         self._wsdl_path = wsdl_path
         self._wsdl_orig = wsdl
         self._wsdl = self._getWSDL(wsdl, wsdl_path)
@@ -30,9 +29,9 @@ class Hera:
         # manually.  See https://fedorahosted.org/suds/ticket/220 for details.
         imp = Import('http://schemas.xmlsoap.org/soap/encoding/')
 
-        self._doctor = ImportDoctor(imp)
-        self._transport = HttpAuthenticated(username=username, password=password)
-        self._loadWSDL(self._wsdl)
+        doctor = ImportDoctor(imp)
+        transport = HttpAuthenticated(username=username, password=password)
+        self._loadWSDL(self._wsdl, doctor, transport, location)
 
     def _getWSDL(self, wsdl, path=None):
         wsdl = cleanWSDLName(wsdl)
