@@ -19,7 +19,7 @@ class HeraException(Exception):
 class Hera:
 
     def __init__(self, username, password, location,
-            wsdl="System.Cache", wsdl_path=WSDL_PATH):
+            wsdl=DEFAULT_WSDL, wsdl_path=WSDL_PATH):
         
         self._wsdl_path = wsdl_path
         self.wsdl = self._getWSDL(wsdl, wsdl_path)
@@ -27,7 +27,6 @@ class Hera:
         # Apparently Zeus's wsdl is broken and we have to jimmy this thing in
         # manually.  See https://fedorahosted.org/suds/ticket/220 for details.
         imp = Import('http://schemas.xmlsoap.org/soap/encoding/')
-
         doctor = ImportDoctor(imp)
         transport = HttpAuthenticated(username=username, password=password)
         self._loadWSDL(self.wsdl, doctor, transport, location)
@@ -183,7 +182,7 @@ class Hera:
 
 if __name__ == '__main__':
     import sys
-    from getpass import getpass, getuser
+    from getpass import getuser, getpass
 
     location = raw_input('What is the URL for the load balancer? ')
     wsdl_path = raw_input('Where are your WSDL files stored? [{0}] '.format(WSDL_PATH))
