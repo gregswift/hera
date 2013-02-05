@@ -93,7 +93,7 @@ class Hera:
         self.loadWSDL(wsdl)
         return self.client.service.getPoolNames()
 
-    def getNodes(self,pool=None):
+    def getNodes(self, pool=None):
         """Returns list of nodes in pool"""
         wsdl = 'Pool'
         self.loadWSDL(wsdl)
