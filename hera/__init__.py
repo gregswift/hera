@@ -5,11 +5,9 @@ from suds.client import Client
 from suds.transport.http import HttpAuthenticated
 from suds.xsd.doctor import ImportDoctor, Import
 
-VERSION = '1.2'
 WSDL_PATH = '/usr/share/zeus/wsdl'
 DEFAULT_WSDL = 'System.Cache'
 HEADERS = { 'Content-Type': 'text/xml' }
-HEADERS_1_2 = { 'Content-Type': 'application/soap+xml' }
 
 def cleanWSDLName(wsdl):
     """Strips leading path and .wsdl ext from path name for consistency"""
@@ -21,24 +19,17 @@ class HeraException(Exception):
 
 class Hera:
 
-    def __init__(self, username, password, location, version=VERSION,
+    def __init__(self, username, password, location,
             wsdl="System.Cache", wsdl_path=WSDL_PATH):
         
         self.location = location
-        self.version = version
         self._wsdl_path = wsdl_path
         self._wsdl_orig = wsdl
-        self._wsdl = self._getWSDL(wsdl, wsdl_path, version)
+        self._wsdl = self._getWSDL(wsdl, wsdl_path)
 
         # Apparently Zeus's wsdl is broken and we have to jimmy this thing in
         # manually.  See https://fedorahosted.org/suds/ticket/220 for details.
         imp = Import('http://schemas.xmlsoap.org/soap/encoding/')
-
-        ### I'm getting rid of this... don't think its needed anymore?
-        # Also, you'll be happy to know that the zillion .wsdl files that Zeus
-        # includes apparently have different targetNamespace's. So..
-        # we are defaulting to 1.2 now, but 
-        #imp.filter.add('http://soap.zeus.com/zxtm/1.2/')
 
         self._doctor = ImportDoctor(imp)
 
@@ -46,15 +37,12 @@ class Hera:
 
         self._loadWSDL(self._wsdl)
 
-    def _getWSDL(self, wsdl, path, version):
+    def _getWSDL(self, wsdl, path):
         wsdl = cleanWSDLName(wsdl)
-        versioned_wsdl = '{0}_{1}'.format(wsdl, version.replace('.','_'))
         path = os.path.abspath(path)
         available = self.availableWSDLs(path)
-        for w in (versioned_wsdl, wsdl):
-            if w in available:
-                # Sorry windows
-                return 'file://{0}.wsdl'.format(os.path.join(path,w))
+        if wsdl in available:
+            return 'file://{0}.wsdl'.format(os.path.join(path,wsdl))
         raise HeraException, 'Unable to locate WSDL {0}'.format(wsdl)
 
     def availableWSDLs(self, path):
@@ -64,14 +52,8 @@ class Hera:
                 available.append(cleanWSDLName(wsdl))
         return available
 
-    def _loadWSDL(self, wsdl, version=None, doctor=None, transport=None, location=None):
-        if version is None:
-            version = self.version
+    def _loadWSDL(self, wsdl, doctor=None, transport=None, location=None):
         _headers = HEADERS
-        if version == '1.2':
-            from suds.bindings import binding
-            binding.envns = ('SOAP-ENV', 'http://www.w3.org/2003/05/soap-envelope')
-            _headers = HEADERS_1_2
         if doctor is None:
             doctor = self._doctor
         if location is None:
@@ -86,14 +68,12 @@ class Hera:
         self._location = location
         self._transport = transport
 
-    def loadWSDL(self, wsdl, wsdl_path=None, version=None):
+    def loadWSDL(self, wsdl, wsdl_path=None):
         if wsdl == self._wsdl:
             return
         if wsdl_path is None:
             wsdl_path = self._wsdl_path
-        if version is None:
-            version = self.version
-        new_wsdl = self._getWSDL(wsdl, wsdl_path, version)
+        new_wsdl = self._getWSDL(wsdl, wsdl_path)
         self._loadWSDL(new_wsdl)
         self._wsdl_path = wsdl_path
         self._wsdl = new_wsdl
