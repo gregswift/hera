@@ -39,10 +39,12 @@ class Hera:
         available = self.availableWSDLs(path)
         if wsdl in available:
             return 'file://{0}.wsdl'.format(os.path.join(path,wsdl))
-        raise HeraException, 'Unable to locate WSDL {0}'.format(wsdl)
+        raise HeraException, 'Unable to locate WSDL'
 
     def availableWSDLs(self, path):
         available = []
+        if not os.path.isdir(path):
+            raise HeraException, 'Did not find path to WSDLs'
         for wsdl in os.listdir(path):
             if os.path.isfile(os.path.join(path,wsdl)):
                 available.append(cleanWSDLName(wsdl))
