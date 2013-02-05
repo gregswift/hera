@@ -26,10 +26,9 @@ class Hera:
         
         self.location = location
         self.version = version
-        # Sorry windows
-        self._wsdl_path = os.path.abspath(wsdl_path)
+        self._wsdl_path = wsdl_path
         self._wsdl_orig = wsdl
-        self._wsdl = self._getWSDL(wsdl, self._wsdl_path, version)
+        self._wsdl = self._getWSDL(wsdl, wsdl_path, version)
 
         # Apparently Zeus's wsdl is broken and we have to jimmy this thing in
         # manually.  See https://fedorahosted.org/suds/ticket/220 for details.
@@ -54,6 +53,7 @@ class Hera:
         available = self.availableWSDLs(path)
         for w in (versioned_wsdl, wsdl):
             if w in available:
+                # Sorry windows
                 return 'file://{0}.wsdl'.format(os.path.join(path,w))
         raise HeraException, 'Unable to locate WSDL {0}'.format(wsdl)
 
