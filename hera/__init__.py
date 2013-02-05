@@ -7,7 +7,6 @@ from suds.xsd.doctor import ImportDoctor, Import
 
 WSDL_PATH = '/usr/share/zeus/wsdl'
 DEFAULT_WSDL = 'System.Cache'
-HEADERS = { 'Content-Type': 'text/xml' }
 
 def cleanWSDLName(wsdl):
     """Strips leading path and .wsdl ext from path name for consistency"""
@@ -53,7 +52,6 @@ class Hera:
         return available
 
     def _loadWSDL(self, wsdl, doctor=None, transport=None, location=None):
-        _headers = HEADERS
         if doctor is None:
             doctor = self._doctor
         if location is None:
@@ -62,8 +60,7 @@ class Hera:
             (username, password) = self._transport.credentials()
             transport = HttpAuthenticated(username=username, password=password)
         self.client = Client(wsdl, doctor=doctor, transport=transport,
-                location=location, headers=_headers)
-        self._headers = _headers
+                location=location)
         self._doctor = doctor
         self._location = location
         self._transport = transport
