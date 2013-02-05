@@ -72,7 +72,8 @@ class Hera:
             return
         new_wsdl = self._getWSDL(wsdl, wsdl_path)
         self._loadWSDL(new_wsdl)
-        self._wsdl_path = wsdl_path
+        if wsdl_path is not None:
+            self._wsdl_path = wsdl_path
         self._wsdl = new_wsdl
 
     def getVirtualServerNames(self):
