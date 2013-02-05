@@ -31,13 +31,13 @@ class Hera:
         imp = Import('http://schemas.xmlsoap.org/soap/encoding/')
 
         self._doctor = ImportDoctor(imp)
-
         self._transport = HttpAuthenticated(username=username, password=password)
-
         self._loadWSDL(self._wsdl)
 
-    def _getWSDL(self, wsdl, path):
+    def _getWSDL(self, wsdl, path=None):
         wsdl = cleanWSDLName(wsdl)
+        if path is None:
+            path = self._wsdl_path
         path = os.path.abspath(path)
         available = self.availableWSDLs(path)
         if wsdl in available:
@@ -57,19 +57,19 @@ class Hera:
         if location is None:
             location = self.location
         if transport is None:
+            # We can't re-use the same transport so we re-initialize it
             (username, password) = self._transport.credentials()
             transport = HttpAuthenticated(username=username, password=password)
         self.client = Client(wsdl, doctor=doctor, transport=transport,
                 location=location)
+        # override stored bits if the last step worked
         self._doctor = doctor
-        self._location = location
+        self.location = location
         self._transport = transport
 
     def loadWSDL(self, wsdl, wsdl_path=None):
         if wsdl == self._wsdl:
             return
-        if wsdl_path is None:
-            wsdl_path = self._wsdl_path
         new_wsdl = self._getWSDL(wsdl, wsdl_path)
         self._loadWSDL(new_wsdl)
         self._wsdl_path = wsdl_path
@@ -199,4 +199,12 @@ if __name__ == '__main__':
     print 'Now we need to authenticate {0} on {1}'.format(username,location)
     password = getpass('What is your password? ')
     h = Hera(username, password, location, wsdl=wsdl, wsdl_path=wsdl_path)
-    h.getGlobalCacheInfo()
+    print "Running tests:"
+    print "Test 1 - Display Global Cache information (getGlobalCacheInfo):"
+    print h.getGlobalCacheInfo()
+    print "Test 2 - Display Name of All Virtual servers (getVirtualServerNames):"
+    for server in h.getVirtualServerNames():
+        print "\t{0}".format(server)
+    print "Test 3 - Display Name of All Pools (getPoolNames):"
+    for pool in h.getPoolNames():
+        print "\t{0}".format(pool)
