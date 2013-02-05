@@ -17,6 +17,12 @@ Manager through a maze of clicking:
     3) Click "Technical Support"
     4) The manuals are all on this page as well as a link to "Control API WSDL Files"
 
+Making the WSDL files available to Hera
+---------------------------------------
+
+Once you have downloaded the zip file from the Traffic Manager as described above,
+extract its contents to /usr/share/zeus/wsdl/
+
 
 Basic Use
 ---------
@@ -27,7 +33,7 @@ A simple example::
     >>> h = Hera(username, password, location)
 
     # Empties the entire cache
-    >>> h.flushAll()
+    >>> h.clearWebCache()
 
 
 Tests
