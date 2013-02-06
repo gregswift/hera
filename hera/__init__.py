@@ -96,11 +96,11 @@ class Hera:
         self.loadWSDL(wsdl)
         return self.client.service.getPoolNames()
 
-    def getNodes(self, pool=None):
+    def getNodes(self, pool=[]):
         """Returns list of nodes in pool"""
         wsdl = 'Pool'
         self.loadWSDL(wsdl)
-        return self.client.service.getNodes([pool])
+        return self.client.service.getNodes(pool)
 
     def getNodesConnectionCounts(self, nodes=[]):
         """Return number of active connections for nodes"""
@@ -108,31 +108,37 @@ class Hera:
         self.loadWSDL(wsdl)
         return self.client.service.getNodesConnectionCounts(nodes)
 
-    def getDisabledNodes(self, pool=None):
+    def getDisabledNodes(self, pool=[]):
         """Returns list of disabled nodes from pool"""
         wsdl = 'Pool'
         self.loadWSDL(wsdl)
-        return self.client.service.getDisabledNodes([pool])
+        return self.client.service.getDisabledNodes(pool)
 
-    def setDisableNodes(self, pool=None, nodes=[]):
+    def setDisabledNodes(self, pool=[], nodes=[]):
         """Set nodes to draining in pool"""
         wsdl = 'Pool'
         self.loadWSDL(wsdl)
         if sum(self.getNodesConnectionCounts(nodes).values()) != 0:
             raise HeraException, 'Refusing to disable node(s) with active connections'
-        return self.client.service.setDrainingNodes([pool], [nodes])
+        return self.client.service.setDisabledNodes(pool, nodes)
 
-    def getDrainingNodes(self,pool=None):
+    def getDrainingNodes(self, pool=[]):
         """Returns list of draining nodes from pool"""
         wsdl = 'Pool'
         self.loadWSDL(wsdl)
-        return self.client.service.getDrainingNodes([pool])
+        return self.client.service.getDrainingNodes(pool)
 
-    def setDrainingNodes(self, pool=None, node=[]):
+    def setDrainingNodes(self, pool=[], nodes=[]):
         """Set nodes to draining in pool"""
         wsdl = 'Pool'
         self.loadWSDL(wsdl)
-        return self.client.service.setDrainingNodes([pool], [node])
+        return self.client.service.setDrainingNodes(pool, nodes)
+
+    def enableNodes(self, pool=[], nodes=[]):
+        """Enabled nodes in pool"""
+        wsdl = 'Pool'
+        self.loadWSDL(wsdl)
+        return self.client.service.enableNodes(pool, nodes)
 
     def getGlobalCacheInfo(self):
         """Returns a small object of statistics."""
